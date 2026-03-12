@@ -335,60 +335,48 @@
                 const isAdmin = urlParams.get('tgWebAppStartParam') === 'admin' || false; // Simple check, full validation on bot
 
                 if (value === 'in_progress') {
-                    console.log('User abandoned quiz. Elimination triggered.');
-                    // Disable confirmation first to allow closing
-                    if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
-                    
-                    // MUST clear status BEFORE handleLose because handleLose might close the app
+                    // Detect re-entry after abandonment
                     storage.set('quiz_status', 'completed', () => {
                         handleLose('curang_tutup');
                     });
                     return;
                 }
 
-                // New logic: Check if user has already played (one-time rule)
-                storage.get('has_played', (err, played) => {
-                    // Check winners list first (global override/broadcast)
-                    if (urlParams.get('quota_full') === '1') {
-                        const winnersData = urlParams.get('winners');
-                        if (winnersData) {
-                            try {
-                                const base64Decoded = atob(winnersData);
-                                const uriDecoded = decodeURIComponent(base64Decoded);
-                                const winnersList = JSON.parse(uriDecoded);
-                                const winnersContainer = document.getElementById('winners-list');
-                                winnersContainer.innerHTML = '';
-                                winnersList.forEach((w, idx) => {
-                                    winnersContainer.innerHTML += `
-                                        <div class="glass-card p-2 px-3 flex justify-between items-center bg-white/10 relative overflow-hidden">
-                                            <div class="z-10 relative">
-                                                <div class="text-brand-gold font-bold text-base leading-tight tracking-wide">@${w.ig}</div>
-                                                <div class="text-xs text-white/80 font-mono tracking-widest bg-black/20 px-1.5 py-0.5 mt-1 rounded inline-block border border-white/10">${w.gopay}</div>
-                                            </div>
-                                            <div class="w-8 h-8 rounded-full bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold font-extrabold text-lg shadow-[0_0_10px_rgba(251,191,36,0.2)] z-10">
-                                                ${idx + 1}
-                                            </div>
-                                            <div class="absolute -right-2 -bottom-2 opacity-5 pointer-events-none">
-                                                <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
-                                            </div>
+                // Check winners list first (global override/broadcast)
+                if (urlParams.get('quota_full') === '1') {
+                    const winnersData = urlParams.get('winners');
+                    if (winnersData) {
+                        try {
+                            const base64Decoded = atob(winnersData);
+                            const uriDecoded = decodeURIComponent(base64Decoded);
+                            const winnersList = JSON.parse(uriDecoded);
+                            const winnersContainer = document.getElementById('winners-list');
+                            winnersContainer.innerHTML = '';
+                            winnersList.forEach((w, idx) => {
+                                winnersContainer.innerHTML += `
+                                    <div class="glass-card p-2 px-3 flex justify-between items-center bg-white/10 relative overflow-hidden">
+                                        <div class="z-10 relative">
+                                            <div class="text-brand-gold font-bold text-base leading-tight tracking-wide">@${w.ig}</div>
+                                            <div class="text-xs text-white/80 font-mono tracking-widest bg-black/20 px-1.5 py-0.5 mt-1 rounded inline-block border border-white/10">${w.gopay}</div>
                                         </div>
-                                    `;
-                                });
-                            } catch (e) {
-                                console.error("Failed to parse winners list", e);
-                            }
+                                        <div class="w-8 h-8 rounded-full bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold font-extrabold text-lg shadow-[0_0_10px_rgba(251,191,36,0.2)] z-10">
+                                            ${idx + 1}
+                                        </div>
+                                        <div class="absolute -right-2 -bottom-2 opacity-5 pointer-events-none">
+                                            <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        } catch (e) {
+                            console.error("Failed to parse winners list", e);
                         }
-                        showScreen('winners');
-                        triggerContinuousConfetti();
-                    } else if (played === 'true' && !isAdmin) {
-                        // User already played and finished/failed
-                        alert("Anda sudah pernah mengikuti kuis ini. Kesempatan hanya satu kali.");
-                        tg.close();
-                        return;
-                    } else {
-                        showScreen('welcome');
                     }
-                });
+                    showScreen('winners');
+                    triggerContinuousConfetti();
+                } else {
+                    showScreen('welcome');
+                }
             });
         });
 
