@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -8,6 +9,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -34,7 +36,7 @@
             overscroll-behavior-y: none;
             -webkit-tap-highlight-color: transparent;
         }
-        
+
         /* Screen Transitions */
         .screen {
             display: none;
@@ -42,6 +44,7 @@
             transition: opacity 0.4s ease, transform 0.4s ease;
             transform: translateY(10px);
         }
+
         .screen.active {
             display: flex;
             opacity: 1;
@@ -61,6 +64,7 @@
         .option-btn {
             transition: all 0.2s ease;
         }
+
         .option-btn:active {
             transform: scale(0.97);
             background: rgba(255, 255, 255, 0.25);
@@ -77,31 +81,36 @@
             outline: none;
             transition: border-color 0.2s, background 0.2s;
         }
+
         .modern-input:focus {
             border-color: #fbbf24;
             background: rgba(255, 255, 255, 0.15);
         }
+
         .modern-input::placeholder {
             color: rgba(255, 255, 255, 0.4);
         }
-        
+
         /* Disable number arrows */
-        input[type=number]::-webkit-inner-spin-button, 
-        input[type=number]::-webkit-outer-spin-button { 
-            -webkit-appearance: none; 
-            margin: 0; 
+        input[type=number]::-webkit-inner-spin-button,
+        input[type=number]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
         }
     </style>
 </head>
+
 <body class="text-white h-screen w-screen overflow-hidden flex justify-center items-center">
 
     <!-- Container for mobile simulation & layout -->
     <div class="w-full max-w-md h-full relative flex flex-col p-6 shadow-2xl overflow-y-auto">
-        
+
         <!-- Global Background mosque decoration -->
         <div class="absolute bottom-0 left-0 w-full opacity-30 pointer-events-none z-0">
             <svg viewBox="0 0 1440 320" class="w-full h-auto text-brand-gold fill-current" preserveAspectRatio="none">
-                <path d="M0,224L48,229.3C96,235,192,245,288,234.7C384,224,480,192,576,197.3C672,203,768,245,864,256C960,267,1056,245,1152,229.3C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                <path
+                    d="M0,224L48,229.3C96,235,192,245,288,234.7C384,224,480,192,576,197.3C672,203,768,245,864,256C960,267,1056,245,1152,229.3C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z">
+                </path>
                 <!-- Mosque Domes SVG Path Simplified -->
                 <path d="M 600,200 Q 640,-50 680,200 Z" fill="rgba(251, 191, 36, 0.4)"></path>
                 <path d="M 400,230 Q 430,30 460,230 Z" fill="rgba(251, 191, 36, 0.3)"></path>
@@ -116,14 +125,17 @@
 
         <!-- Global Hanging Lanterns -->
         <div class="absolute top-0 left-4 w-12 opacity-50 z-0 pointer-events-none animate-pulse">
-            <svg viewBox="0 0 24 60" fill="none" stroke="currentColor" class="w-full h-auto text-brand-gold drop-shadow-lg">
+            <svg viewBox="0 0 24 60" fill="none" stroke="currentColor"
+                class="w-full h-auto text-brand-gold drop-shadow-lg">
                 <line x1="12" y1="0" x2="12" y2="20" stroke-width="1.5"></line>
                 <path d="M8 20 Q 12 15 16 20 L 18 35 Q 12 40 6 35 Z" fill="currentColor"></path>
                 <rect x="10" y="38" width="4" height="6" fill="currentColor"></rect>
             </svg>
         </div>
-        <div class="absolute top-0 right-4 w-10 opacity-50 z-0 pointer-events-none animate-pulse" style="animation-delay: 1s;">
-            <svg viewBox="0 0 24 60" fill="none" stroke="currentColor" class="w-full h-auto text-brand-gold drop-shadow-lg">
+        <div class="absolute top-0 right-4 w-10 opacity-50 z-0 pointer-events-none animate-pulse"
+            style="animation-delay: 1s;">
+            <svg viewBox="0 0 24 60" fill="none" stroke="currentColor"
+                class="w-full h-auto text-brand-gold drop-shadow-lg">
                 <line x1="12" y1="0" x2="12" y2="30" stroke-width="1.5"></line>
                 <path d="M8 30 Q 12 25 16 30 L 18 45 Q 12 50 6 45 Z" fill="currentColor"></path>
                 <rect x="10" y="48" width="4" height="6" fill="currentColor"></rect>
@@ -132,28 +144,48 @@
 
         <!-- Welcome Screen -->
         <div id="screen-welcome" class="screen flex-col items-center justify-center h-full">
-            <div class="mb-8 p-5 bg-brand-green/20 rounded-full inline-block backdrop-blur-md border border-brand-green/30 shadow-lg shadow-brand-green/20">
-                <svg class="w-16 h-16 text-brand-gold" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <div
+                class="mb-8 p-5 bg-brand-green/20 rounded-full inline-block backdrop-blur-md border border-brand-green/30 shadow-lg shadow-brand-green/20">
+                <svg class="w-16 h-16 text-brand-gold" fill="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
                     <path d="M21.5 14.07A8.99 8.99 0 0113.8 3a8.98 8.98 0 00-4.8 16.5A8.98 8.98 0 0021.5 14.07z" />
                 </svg>
             </div>
-            <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-gold to-yellow-200 mb-5 text-center leading-tight tracking-tight">Kuis Berkah<br>Ramadhan</h1>
-            <p class="text-gray-300 text-center mb-10 text-base px-2 leading-relaxed">Jawab 5 pertanyaan berturut-turut dengan benar dalam <span class="text-brand-gold font-semibold tracking-wide">3 menit</span> dan menangkan saldo GoPay <span class="text-brand-gold font-semibold tracking-wide">Rp 50.000!</span><br><br><span class="text-xs text-red-400 font-medium bg-red-900/40 p-2 rounded-lg inline-block border border-red-500/30">⚠️ Dilarang keluar/berpindah dari aplikasi selama kuis berlangsung, atau Anda akan langsung dinyatakan gagal!</span></p>
-            <button onclick="startQuiz()" class="w-full bg-brand-gold hover:bg-yellow-400 text-brand-dark font-bold py-4 px-8 rounded-xl shadow-lg shadow-brand-gold/20 transition-all active:scale-95 text-lg">Mulai Kuis</button>
+            <h1
+                class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-gold to-yellow-200 mb-5 text-center leading-tight tracking-tight">
+                Kuis Berkah<br>Ramadhan</h1>
+            <p class="text-gray-300 text-center mb-10 text-base px-2 leading-relaxed">Jawab 5 pertanyaan dengan benar
+                dalam <span class="text-brand-gold font-semibold tracking-wide">3 menit</span> dan menangkan saldo GoPay
+                <span class="text-brand-gold font-semibold tracking-wide">Rp 50.000!</span><br><br><span
+                    class="text-xs text-red-400 font-medium bg-red-900/40 p-2 rounded-lg inline-block border border-red-500/30">⚠️
+                    Dilarang keluar/berpindah dari aplikasi selama kuis berlangsung!</span>
+            </p>
+            <button onclick="startQuiz()"
+                class="w-full bg-brand-gold hover:bg-yellow-400 text-brand-dark font-bold py-4 px-8 rounded-xl shadow-lg shadow-brand-gold/20 transition-all active:scale-95 text-lg">Mulai
+                Kuis</button>
         </div>
 
         <!-- Quiz Screen -->
         <div id="screen-quiz" class="screen flex-col h-full py-4 relative">
             <div class="flex justify-between items-center mb-8 glass-card p-4 shadow-md">
-                <div class="text-sm font-semibold text-brand-gold tracking-wide">Soal: <span id="soal-counter" class="text-white">1</span>/5</div>
+                <div class="text-sm font-semibold text-brand-gold tracking-wide">Soal: <span id="soal-counter"
+                        class="text-white">1</span>/5</div>
                 <div class="flex items-center gap-2">
-                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <div id="timer-display" class="text-sm font-mono font-bold tracking-wider text-white transition-colors duration-300">03:00</div>
+                    <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <div id="timer-display"
+                        class="text-sm font-mono font-bold tracking-wider text-white transition-colors duration-300">
+                        03:00</div>
                 </div>
             </div>
-            
+
             <div class="flex-grow flex flex-col justify-center">
-                <h2 id="question-text" class="text-xl sm:text-2xl font-semibold mb-8 text-center leading-snug drop-shadow-md">Question text goes here?</h2>
+                <h2 id="question-text"
+                    class="text-xl sm:text-2xl font-semibold mb-8 text-center leading-snug drop-shadow-md">Question text
+                    goes here?</h2>
                 <div id="options-container" class="space-y-3 w-full">
                     <!-- Options injected here via JS -->
                 </div>
@@ -163,65 +195,102 @@
         <!-- Lose Screen -->
         <div id="screen-lose" class="screen flex-col items-center justify-center h-full">
             <div class="mb-6 p-5 bg-red-500/10 rounded-full border border-red-500/20 shadow-lg shadow-red-500/10">
-                <svg class="w-16 h-16 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                <svg class="w-16 h-16 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12">
+                    </path>
+                </svg>
             </div>
             <h2 class="text-3xl font-bold text-white mb-3 tracking-tight">Maaf, Anda Gagal!</h2>
             <p id="lose-reason" class="text-red-300 mb-10 text-center px-4 text-base">Jawaban Anda salah.</p>
-            <button onclick="closeApp('lose')" class="w-full glass-card hover:bg-white/10 text-white font-semibold py-4 px-8 rounded-xl transition-all active:scale-95 shadow-lg">Tutup</button>
+            <button onclick="closeApp('lose')"
+                class="w-full glass-card hover:bg-white/10 text-white font-semibold py-4 px-8 rounded-xl transition-all active:scale-95 shadow-lg">Tutup</button>
         </div>
 
         <!-- Celebration Screen -->
-        <div id="screen-celebration" class="screen flex-col items-center justify-center h-full relative overflow-hidden">
+        <div id="screen-celebration"
+            class="screen flex-col items-center justify-center h-full relative overflow-hidden">
             <div class="z-10 flex flex-col items-center">
-                <div class="mb-6 p-5 bg-brand-gold/10 rounded-full border border-brand-gold/20 shadow-lg shadow-brand-gold/30">
-                    <svg class="w-20 h-20 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div
+                    class="mb-6 p-5 bg-brand-gold/10 rounded-full border border-brand-gold/20 shadow-lg shadow-brand-gold/30">
+                    <svg class="w-20 h-20 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
                 </div>
-                <h2 class="text-4xl font-extrabold text-brand-gold mb-3 tracking-tighter drop-shadow-md">Luar Biasa!</h2>
-                <p class="text-white text-center mb-10 text-lg px-4 font-medium drop-shadow-md">Alhamdulillah, Anda berhasil menjawab semua pertanyaan dengan benar!</p>
-                <button onclick="showClaimForm()" class="w-full max-w-[280px] bg-brand-gold hover:bg-yellow-400 text-brand-dark font-extrabold py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(251,191,36,0.5)] transition-all active:scale-95 text-lg relative z-20">Bagikan & Ambil Hadiah</button>
+                <h2 class="text-4xl font-extrabold text-brand-gold mb-3 tracking-tighter drop-shadow-md">Luar Biasa!
+                </h2>
+                <p class="text-white text-center mb-10 text-lg px-4 font-medium drop-shadow-md">Alhamdulillah, Anda
+                    berhasil menjawab semua pertanyaan dengan benar!</p>
+                <button onclick="showClaimForm()"
+                    class="w-full max-w-[280px] bg-brand-gold hover:bg-yellow-400 text-brand-dark font-extrabold py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(251,191,36,0.5)] transition-all active:scale-95 text-lg relative z-20 mb-3">Isi
+                    Data</button>
+                <button onclick="shareWin()" id="btn-share-story"
+                    class="w-full max-w-[280px] bg-white/10 hover:bg-white/20 text-white font-bold py-3 px-8 rounded-xl border border-white/20 transition-all active:scale-95 text-sm flex items-center justify-center gap-2 relative z-20 backdrop-blur-sm">
+                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    Berbagi ke Story
+                </button>
             </div>
         </div>
 
         <!-- Win / Claim Screen -->
         <div id="screen-win" class="screen flex-col items-center justify-center h-full pt-8 pb-4">
-            <div class="mb-6 p-5 bg-brand-gold/10 rounded-full border border-brand-gold/20 shadow-lg shadow-brand-gold/10">
-                <svg class="w-16 h-16 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <div
+                class="mb-6 p-5 bg-brand-gold/10 rounded-full border border-brand-gold/20 shadow-lg shadow-brand-gold/10">
+                <svg class="w-16 h-16 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
             </div>
             <h2 class="text-3xl font-bold text-brand-gold mb-2 tracking-tight">Alhamdulillah,<br>Menang!</h2>
-            <p class="text-gray-300 text-center mb-8 text-sm px-2">Silakan isi data berikut untuk klaim GoPay Rp 50.000.</p>
-            
+            <p class="text-gray-300 text-center mb-8 text-sm px-2">Silakan isi data berikut untuk klaim GoPay Rp 50.000.
+            </p>
+
             <div class="w-full space-y-4 mb-8">
                 <div>
-                    <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1 uppercase tracking-wider">Nama Lengkap</label>
+                    <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1 uppercase tracking-wider">Nama
+                        Lengkap</label>
                     <input type="text" id="input-nama" class="modern-input" placeholder="Masukkan nama..." required>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1 uppercase tracking-wider">Nomor GoPay</label>
+                    <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1 uppercase tracking-wider">Nomor
+                        GoPay</label>
                     <input type="number" id="input-gopay" class="modern-input" placeholder="08..." required>
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1 uppercase tracking-wider">Username IG</label>
+                    <label class="block text-xs font-medium text-gray-400 mb-1.5 ml-1 uppercase tracking-wider">Username
+                        IG</label>
                     <input type="text" id="input-ig" class="modern-input" placeholder="@username" required>
                 </div>
             </div>
-            
-            <button id="btn-claim" onclick="submitClaim()" class="w-full mt-auto bg-brand-gold hover:bg-yellow-400 text-brand-dark font-bold py-4 px-8 rounded-xl shadow-lg shadow-brand-gold/20 transition-all active:scale-95 text-lg">Klaim Hadiah</button>
+
+            <button id="btn-claim" onclick="submitClaim()"
+                class="w-full mt-auto bg-brand-gold hover:bg-yellow-400 text-brand-dark font-bold py-4 px-8 rounded-xl shadow-lg shadow-brand-gold/20 transition-all active:scale-95 text-lg">Klaim
+                Hadiah</button>
         </div>
 
         <!-- Winners Screen -->
         <div id="screen-winners" class="screen flex-col items-center justify-start h-full relative overflow-hidden">
             <div class="z-10 flex flex-col items-center w-full pt-8 pb-4 h-full relative">
-                <div class="mb-4 p-4 bg-brand-gold/10 rounded-full border border-brand-gold/20 shadow-lg shadow-brand-gold/30 relative z-10">
-                    <svg class="w-12 h-12 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                <div
+                    class="mb-4 p-4 bg-brand-gold/10 rounded-full border border-brand-gold/20 shadow-lg shadow-brand-gold/30 relative z-10">
+                    <svg class="w-12 h-12 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
                 </div>
-                <h2 class="text-3xl font-extrabold text-brand-gold mb-2 tracking-tighter drop-shadow-md z-10 text-center">Selamat Kepada Pemenang!</h2>
-                <p class="text-white text-center mb-6 text-sm px-4 font-semibold drop-shadow-md z-10">Kuis Berkah Ramadhan 1447 H / 2026 M telah selesai. Terima kasih kepada seluruh partisipan!</p>
-                
+                <h2
+                    class="text-3xl font-extrabold text-brand-gold mb-2 tracking-tighter drop-shadow-md z-10 text-center">
+                    Selamat Kepada Pemenang!</h2>
+                <p class="text-white text-center mb-6 text-sm px-4 font-semibold drop-shadow-md z-10">Kuis Berkah
+                    Ramadhan 1447 H / 2026 M telah selesai. Terima kasih kepada seluruh partisipan!</p>
+
                 <div id="winners-list" class="w-full flex-grow overflow-y-auto space-y-2 px-2 pb-16 z-10 mb-4">
                     <!-- Winners injected here -->
                 </div>
-                
-                <button onclick="tg.close()" class="w-full mt-auto bg-white/10 hover:bg-white/20 text-white font-semibold py-4 px-8 rounded-xl transition-all active:scale-95 shadow-lg border border-white/20 backdrop-blur-md relative z-10">Tutup Aplikasi</button>
+
+                <button onclick="tg.close()"
+                    class="w-full mt-auto bg-white/10 hover:bg-white/20 text-white font-semibold py-4 px-8 rounded-xl transition-all active:scale-95 shadow-lg border border-white/20 backdrop-blur-md relative z-10">Tutup
+                    Aplikasi</button>
             </div>
         </div>
 
@@ -229,12 +298,19 @@
 
     <script>
         // 1. Telegram Web App Mock & Initialization
-        const tg = window.Telegram?.WebApp || { 
-            expand: () => console.log('tg.expand() called'), 
-            sendData: (data) => console.log('tg.sendData()', data), 
-            close: () => alert("Web App Closed") 
+        const tg = window.Telegram?.WebApp || {
+            expand: () => console.log('tg.expand() called'),
+            sendData: (data) => console.log('tg.sendData()', data),
+            close: () => alert("Web App Closed"),
+            enableClosingConfirmation: () => console.log('Closing confirmation enabled'),
+            disableClosingConfirmation: () => console.log('Closing confirmation disabled'),
+            CloudStorage: {
+                setItem: (key, val, cb) => { localStorage.setItem(key, val); if (cb) cb(null, true); },
+                getItem: (key, cb) => { cb(null, localStorage.getItem(key)); },
+                removeItem: (key, cb) => { localStorage.removeItem(key); if (cb) cb(null, true); }
+            }
         };
-        
+
         document.addEventListener('DOMContentLoaded', () => {
             try {
                 tg.expand();
@@ -242,41 +318,52 @@
                 console.warn('Telegram WebApp expand failed:', e);
             }
 
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('quota_full') === '1') {
-                const winnersData = urlParams.get('winners');
-                if (winnersData) {
-                    try {
-                        const base64Decoded = atob(winnersData);
-                        const uriDecoded = decodeURIComponent(base64Decoded);
-                        const winnersList = JSON.parse(uriDecoded);
-                        const winnersContainer = document.getElementById('winners-list');
-                        winnersContainer.innerHTML = '';
-                        winnersList.forEach((w, idx) => {
-                            winnersContainer.innerHTML += `
-                                <div class="glass-card p-2 px-3 flex justify-between items-center bg-white/10 relative overflow-hidden">
-                                    <div class="z-10 relative">
-                                        <div class="text-brand-gold font-bold text-base leading-tight tracking-wide">@${w.ig}</div>
-                                        <div class="text-xs text-white/80 font-mono tracking-widest bg-black/20 px-1.5 py-0.5 mt-1 rounded inline-block border border-white/10">${w.gopay}</div>
-                                    </div>
-                                    <div class="w-8 h-8 rounded-full bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold font-extrabold text-lg shadow-[0_0_10px_rgba(251,191,36,0.2)] z-10">
-                                        ${idx + 1}
-                                    </div>
-                                    <div class="absolute -right-2 -bottom-2 opacity-5 pointer-events-none">
-                                        <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
-                                    </div>
-                                </div>
-                            `;
-                        });
-                    } catch (e) {
-                        console.error("Failed to parse winners list", e);
-                    }
+            // Check if user previously closed app mid-quiz
+            tg.CloudStorage.getItem('quiz_status', (err, value) => {
+                const urlParams = new URLSearchParams(window.location.search);
+
+                if (value === 'in_progress') {
+                    // User closed app mid-quiz previously
+                    tg.CloudStorage.setItem('quiz_status', 'completed');
+                    handleLose('curang_tutup');
+                    return;
                 }
-                showScreen('winners');
-                triggerContinuousConfetti();
-            } else {
-                showScreen('welcome');
-            }
+
+                if (urlParams.get('quota_full') === '1') {
+                    const winnersData = urlParams.get('winners');
+                    if (winnersData) {
+                        try {
+                            const base64Decoded = atob(winnersData);
+                            const uriDecoded = decodeURIComponent(base64Decoded);
+                            const winnersList = JSON.parse(uriDecoded);
+                            const winnersContainer = document.getElementById('winners-list');
+                            winnersContainer.innerHTML = '';
+                            winnersList.forEach((w, idx) => {
+                                winnersContainer.innerHTML += `
+                                    <div class="glass-card p-2 px-3 flex justify-between items-center bg-white/10 relative overflow-hidden">
+                                        <div class="z-10 relative">
+                                            <div class="text-brand-gold font-bold text-base leading-tight tracking-wide">@${w.ig}</div>
+                                            <div class="text-xs text-white/80 font-mono tracking-widest bg-black/20 px-1.5 py-0.5 mt-1 rounded inline-block border border-white/10">${w.gopay}</div>
+                                        </div>
+                                        <div class="w-8 h-8 rounded-full bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold font-extrabold text-lg shadow-[0_0_10px_rgba(251,191,36,0.2)] z-10">
+                                            ${idx + 1}
+                                        </div>
+                                        <div class="absolute -right-2 -bottom-2 opacity-5 pointer-events-none">
+                                            <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
+                                        </div>
+                                    </div>
+                                `;
+                            });
+                        } catch (e) {
+                            console.error("Failed to parse winners list", e);
+                        }
+                    }
+                    showScreen('winners');
+                    triggerContinuousConfetti();
+                } else {
+                    showScreen('welcome');
+                }
+            });
         });
 
         // 2. Encrypted Quiz Data (20 questions, only 5 selected randomly)
@@ -308,7 +395,7 @@
         const loseReason = document.getElementById('lose-reason');
 
         // Anti-cheat Visibility Check
-        document.addEventListener("visibilitychange", function() {
+        document.addEventListener("visibilitychange", function () {
             if (document.hidden && isQuizActive) {
                 handleLose("curang");
             }
@@ -380,6 +467,11 @@
                 alert("Terjadi kesalahan memuat soal.");
                 return;
             }
+
+            // Set session status to in_progress to detect forced close
+            tg.CloudStorage.setItem('quiz_status', 'in_progress');
+            tg.enableClosingConfirmation();
+
             score = 0;
             timeLeft = 180;
             currentQuestionIndex = 0;
@@ -393,22 +485,22 @@
             const q = activeQuestions[currentQuestionIndex];
             soalCounter.textContent = currentQuestionIndex + 1;
             questionText.textContent = q.q;
-            
+
             optionsContainer.innerHTML = '';
             q.o.forEach((optText, index) => {
                 const btn = document.createElement('button');
                 btn.className = 'option-btn w-full text-left bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl p-4 text-white text-sm sm:text-base font-medium shadow-sm outline-none focus:ring-2 focus:ring-brand-gold/50 flex items-center';
-                
+
                 const label = document.createElement('span');
                 label.className = 'inline-flex justify-center items-center w-8 h-8 rounded-full bg-white/10 text-brand-gold font-bold mr-3 flex-shrink-0';
                 label.textContent = String.fromCharCode(65 + index);
-                
+
                 const textSpan = document.createElement('span');
                 textSpan.textContent = optText;
-                
+
                 btn.appendChild(label);
                 btn.appendChild(textSpan);
-                
+
                 btn.onclick = () => handleAnswer(index);
                 optionsContainer.appendChild(btn);
             });
@@ -434,12 +526,19 @@
             isQuizActive = false;
             clearInterval(timerInterval);
             loseReasonText = reason;
+
+            // Mark quiz as completed/cleared
+            tg.CloudStorage.setItem('quiz_status', 'completed');
+            tg.disableClosingConfirmation();
+
             if (reason === "salah") {
                 loseReason.textContent = "Jawaban Anda salah. Tetap semangat!";
             } else if (reason === "waktu habis") {
                 loseReason.textContent = "Waktu Anda habis. Coba lagi di lain waktu!";
             } else if (reason === "curang") {
                 loseReason.textContent = "Anda terdeteksi keluar dari aplikasi. Kuis dibatalkan!";
+            } else if (reason === "curang_tutup") {
+                loseReason.textContent = "Anda terdeteksi menutup aplikasi saat sesi kuis berlangsung. Anda dianggap gagal!";
             }
             showScreen('lose');
         }
@@ -447,6 +546,11 @@
         function handleWin() {
             isQuizActive = false;
             clearInterval(timerInterval);
+
+            // Session marked as completed, but still need to submit claim
+            tg.CloudStorage.setItem('quiz_status', 'completed');
+            tg.disableClosingConfirmation();
+
             showScreen('celebration');
             triggerConfetti();
         }
@@ -460,7 +564,7 @@
             var animationEnd = Date.now() + duration;
             var defaults = { startVelocity: 35, spread: 360, ticks: 100, zIndex: 50, colors: ['#fbbf24', '#047857', '#ffffff'] };
 
-            var interval = setInterval(function() {
+            var interval = setInterval(function () {
                 var timeLeft = animationEnd - Date.now();
 
                 if (timeLeft <= 0) {
@@ -468,18 +572,18 @@
                 }
 
                 var particleCount = 80 * (timeLeft / duration);
-                
+
                 // Shoot from multiple origins for a fuller effect
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
-                confetti(Object.assign({}, defaults, { particleCount: particleCount/2, origin: { x: 0.5, y: 0.8 } }));
+                confetti(Object.assign({}, defaults, { particleCount: particleCount / 2, origin: { x: 0.5, y: 0.8 } }));
             }, 200);
         }
 
         function triggerContinuousConfetti() {
             var defaults = { startVelocity: 25, spread: 360, ticks: 100, zIndex: 0, colors: ['#fbbf24', '#047857', '#ffffff'] };
-            
-            setInterval(function() {
+
+            setInterval(function () {
                 var particleCount = 20;
                 confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 } }));
             }, 500);
@@ -495,6 +599,68 @@
                 tg.sendData(payload);
                 tg.close();
             }
+        }
+
+        function shareWin() {
+            const btnClaim = document.querySelector('button[onclick="showClaimForm()"]');
+            const btnShare = document.getElementById('btn-share-story');
+            
+            // Temporary hide buttons for clean capture
+            btnClaim.style.visibility = 'hidden';
+            btnShare.style.visibility = 'hidden';
+            
+            // Add a temporary watermark
+            const watermark = document.createElement('div');
+            watermark.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none rotate-[-30deg] z-0';
+            watermark.innerHTML = '<div class="text-4xl font-black text-white whitespace-nowrap tracking-widest uppercase">RAMADAN QUIZ 2026</div>';
+            screens.celebration.appendChild(watermark);
+
+            html2canvas(screens.celebration, {
+                backgroundColor: '#022c22',
+                scale: 2, // Higher quality
+                useCORS: true,
+                logging: false
+            }).then(canvas => {
+                // Remove watermark and restore buttons
+                watermark.remove();
+                btnClaim.style.visibility = 'visible';
+                btnShare.style.visibility = 'visible';
+
+                canvas.toBlob(async (blob) => {
+                    const file = new File([blob], 'victory-ramadhan-quiz.png', { type: 'image/png' });
+                    
+                    if (navigator.share && navigator.canShare && navigator.canShare({ files: [file] })) {
+                        try {
+                            await navigator.share({
+                                files: [file],
+                                title: 'Saya Menang Kuis Ramadhan!',
+                                text: 'Alhamdulillah! Saya baru saja memenangkan kuis Berkah Ramadhan 1447 H. Ayo ikutan juga!',
+                            });
+                        } catch (err) {
+                            if (err.name !== 'AbortError') {
+                                console.error('Share failed:', err);
+                                downloadImage(canvas);
+                            }
+                        }
+                    } else {
+                        // Fallback: Download the image
+                        downloadImage(canvas);
+                    }
+                }, 'image/png');
+            }).catch(err => {
+                console.error('Screenshot failed:', err);
+                btnClaim.style.visibility = 'visible';
+                btnShare.style.visibility = 'visible';
+                watermark.remove();
+            });
+        }
+
+        function downloadImage(canvas) {
+            const link = document.createElement('a');
+            link.download = 'victory-ramadhan-quiz.png';
+            link.href = canvas.toDataURL('image/png');
+            link.click();
+            alert("Gambar kemenangan telah diunduh! Silakan bagikan secara manual ke Instagram Story Anda.");
         }
 
         function submitClaim() {
@@ -522,4 +688,5 @@
         }
     </script>
 </body>
+
 </html>
