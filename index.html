@@ -7,6 +7,7 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -97,15 +98,47 @@
     <!-- Container for mobile simulation & layout -->
     <div class="w-full max-w-md h-full relative flex flex-col p-6 shadow-2xl overflow-y-auto">
         
+        <!-- Global Background mosque decoration -->
+        <div class="absolute bottom-0 left-0 w-full opacity-30 pointer-events-none z-0">
+            <svg viewBox="0 0 1440 320" class="w-full h-auto text-brand-gold fill-current" preserveAspectRatio="none">
+                <path d="M0,224L48,229.3C96,235,192,245,288,234.7C384,224,480,192,576,197.3C672,203,768,245,864,256C960,267,1056,245,1152,229.3C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+                <!-- Mosque Domes SVG Path Simplified -->
+                <path d="M 600,200 Q 640,-50 680,200 Z" fill="rgba(251, 191, 36, 0.4)"></path>
+                <path d="M 400,230 Q 430,30 460,230 Z" fill="rgba(251, 191, 36, 0.3)"></path>
+                <path d="M 800,230 Q 830,30 860,230 Z" fill="rgba(251, 191, 36, 0.3)"></path>
+                <!-- Minarets -->
+                <rect x="520" y="100" width="15" height="150" fill="rgba(251, 191, 36, 0.5)"></rect>
+                <polygon points="527.5,50 520,100 535,100" fill="rgba(251, 191, 36, 0.6)"></polygon>
+                <rect x="740" y="100" width="15" height="150" fill="rgba(251, 191, 36, 0.5)"></rect>
+                <polygon points="747.5,50 740,100 755,100" fill="rgba(251, 191, 36, 0.6)"></polygon>
+            </svg>
+        </div>
+
+        <!-- Global Hanging Lanterns -->
+        <div class="absolute top-0 left-4 w-12 opacity-50 z-0 pointer-events-none animate-pulse">
+            <svg viewBox="0 0 24 60" fill="none" stroke="currentColor" class="w-full h-auto text-brand-gold drop-shadow-lg">
+                <line x1="12" y1="0" x2="12" y2="20" stroke-width="1.5"></line>
+                <path d="M8 20 Q 12 15 16 20 L 18 35 Q 12 40 6 35 Z" fill="currentColor"></path>
+                <rect x="10" y="38" width="4" height="6" fill="currentColor"></rect>
+            </svg>
+        </div>
+        <div class="absolute top-0 right-4 w-10 opacity-50 z-0 pointer-events-none animate-pulse" style="animation-delay: 1s;">
+            <svg viewBox="0 0 24 60" fill="none" stroke="currentColor" class="w-full h-auto text-brand-gold drop-shadow-lg">
+                <line x1="12" y1="0" x2="12" y2="30" stroke-width="1.5"></line>
+                <path d="M8 30 Q 12 25 16 30 L 18 45 Q 12 50 6 45 Z" fill="currentColor"></path>
+                <rect x="10" y="48" width="4" height="6" fill="currentColor"></rect>
+            </svg>
+        </div>
+
         <!-- Welcome Screen -->
-        <div id="screen-welcome" class="screen flex-col items-center justify-center h-full active">
+        <div id="screen-welcome" class="screen flex-col items-center justify-center h-full">
             <div class="mb-8 p-5 bg-brand-green/20 rounded-full inline-block backdrop-blur-md border border-brand-green/30 shadow-lg shadow-brand-green/20">
                 <svg class="w-16 h-16 text-brand-gold" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path d="M21.5 14.07A8.99 8.99 0 0113.8 3a8.98 8.98 0 00-4.8 16.5A8.98 8.98 0 0021.5 14.07z" />
                 </svg>
             </div>
             <h1 class="text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-brand-gold to-yellow-200 mb-5 text-center leading-tight tracking-tight">Kuis Berkah<br>Ramadhan</h1>
-            <p class="text-gray-300 text-center mb-10 text-base px-2 leading-relaxed">Jawab 5 pertanyaan berturut-turut dengan benar dalam <span class="text-brand-gold font-semibold tracking-wide">2 menit</span> dan menangkan saldo GoPay <span class="text-brand-gold font-semibold tracking-wide">Rp 50.000!</span></p>
+            <p class="text-gray-300 text-center mb-10 text-base px-2 leading-relaxed">Jawab 5 pertanyaan berturut-turut dengan benar dalam <span class="text-brand-gold font-semibold tracking-wide">3 menit</span> dan menangkan saldo GoPay <span class="text-brand-gold font-semibold tracking-wide">Rp 50.000!</span><br><br><span class="text-xs text-red-400 font-medium bg-red-900/40 p-2 rounded-lg inline-block border border-red-500/30">⚠️ Dilarang keluar/berpindah dari aplikasi selama kuis berlangsung, atau Anda akan langsung dinyatakan gagal!</span></p>
             <button onclick="startQuiz()" class="w-full bg-brand-gold hover:bg-yellow-400 text-brand-dark font-bold py-4 px-8 rounded-xl shadow-lg shadow-brand-gold/20 transition-all active:scale-95 text-lg">Mulai Kuis</button>
         </div>
 
@@ -115,7 +148,7 @@
                 <div class="text-sm font-semibold text-brand-gold tracking-wide">Soal: <span id="soal-counter" class="text-white">1</span>/5</div>
                 <div class="flex items-center gap-2">
                     <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                    <div id="timer-display" class="text-sm font-mono font-bold tracking-wider text-white transition-colors duration-300">02:00</div>
+                    <div id="timer-display" class="text-sm font-mono font-bold tracking-wider text-white transition-colors duration-300">03:00</div>
                 </div>
             </div>
             
@@ -137,7 +170,19 @@
             <button onclick="closeApp('lose')" class="w-full glass-card hover:bg-white/10 text-white font-semibold py-4 px-8 rounded-xl transition-all active:scale-95 shadow-lg">Tutup</button>
         </div>
 
-        <!-- Win Screen -->
+        <!-- Celebration Screen -->
+        <div id="screen-celebration" class="screen flex-col items-center justify-center h-full relative overflow-hidden">
+            <div class="z-10 flex flex-col items-center">
+                <div class="mb-6 p-5 bg-brand-gold/10 rounded-full border border-brand-gold/20 shadow-lg shadow-brand-gold/30">
+                    <svg class="w-20 h-20 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h2 class="text-4xl font-extrabold text-brand-gold mb-3 tracking-tighter drop-shadow-md">Luar Biasa!</h2>
+                <p class="text-white text-center mb-10 text-lg px-4 font-medium drop-shadow-md">Alhamdulillah, Anda berhasil menjawab semua pertanyaan dengan benar!</p>
+                <button onclick="showClaimForm()" class="w-full max-w-[280px] bg-brand-gold hover:bg-yellow-400 text-brand-dark font-extrabold py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(251,191,36,0.5)] transition-all active:scale-95 text-lg relative z-20">Bagikan & Ambil Hadiah</button>
+            </div>
+        </div>
+
+        <!-- Win / Claim Screen -->
         <div id="screen-win" class="screen flex-col items-center justify-center h-full pt-8 pb-4">
             <div class="mb-6 p-5 bg-brand-gold/10 rounded-full border border-brand-gold/20 shadow-lg shadow-brand-gold/10">
                 <svg class="w-16 h-16 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -163,6 +208,23 @@
             <button id="btn-claim" onclick="submitClaim()" class="w-full mt-auto bg-brand-gold hover:bg-yellow-400 text-brand-dark font-bold py-4 px-8 rounded-xl shadow-lg shadow-brand-gold/20 transition-all active:scale-95 text-lg">Klaim Hadiah</button>
         </div>
 
+        <!-- Winners Screen -->
+        <div id="screen-winners" class="screen flex-col items-center justify-start h-full relative overflow-hidden">
+            <div class="z-10 flex flex-col items-center w-full pt-8 pb-4 h-full relative">
+                <div class="mb-4 p-4 bg-brand-gold/10 rounded-full border border-brand-gold/20 shadow-lg shadow-brand-gold/30 relative z-10">
+                    <svg class="w-12 h-12 text-brand-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                </div>
+                <h2 class="text-3xl font-extrabold text-brand-gold mb-2 tracking-tighter drop-shadow-md z-10 text-center">Selamat Kepada Pemenang!</h2>
+                <p class="text-white text-center mb-6 text-sm px-4 font-semibold drop-shadow-md z-10">Kuis Berkah Ramadhan 1447 H / 2026 M telah selesai. Terima kasih kepada seluruh partisipan!</p>
+                
+                <div id="winners-list" class="w-full flex-grow overflow-y-auto space-y-2 px-2 pb-16 z-10 mb-4">
+                    <!-- Winners injected here -->
+                </div>
+                
+                <button onclick="tg.close()" class="w-full mt-auto bg-white/10 hover:bg-white/20 text-white font-semibold py-4 px-8 rounded-xl transition-all active:scale-95 shadow-lg border border-white/20 backdrop-blur-md relative z-10">Tutup Aplikasi</button>
+            </div>
+        </div>
+
     </div>
 
     <script>
@@ -179,40 +241,53 @@
             } catch (e) {
                 console.warn('Telegram WebApp expand failed:', e);
             }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('quota_full') === '1') {
+                const winnersData = urlParams.get('winners');
+                if (winnersData) {
+                    try {
+                        const base64Decoded = atob(winnersData);
+                        const uriDecoded = decodeURIComponent(base64Decoded);
+                        const winnersList = JSON.parse(uriDecoded);
+                        const winnersContainer = document.getElementById('winners-list');
+                        winnersContainer.innerHTML = '';
+                        winnersList.forEach((w, idx) => {
+                            winnersContainer.innerHTML += `
+                                <div class="glass-card p-2 px-3 flex justify-between items-center bg-white/10 relative overflow-hidden">
+                                    <div class="z-10 relative">
+                                        <div class="text-brand-gold font-bold text-base leading-tight tracking-wide">@${w.ig}</div>
+                                        <div class="text-xs text-white/80 font-mono tracking-widest bg-black/20 px-1.5 py-0.5 mt-1 rounded inline-block border border-white/10">${w.gopay}</div>
+                                    </div>
+                                    <div class="w-8 h-8 rounded-full bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold font-extrabold text-lg shadow-[0_0_10px_rgba(251,191,36,0.2)] z-10">
+                                        ${idx + 1}
+                                    </div>
+                                    <div class="absolute -right-2 -bottom-2 opacity-5 pointer-events-none">
+                                        <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
+                                    </div>
+                                </div>
+                            `;
+                        });
+                    } catch (e) {
+                        console.error("Failed to parse winners list", e);
+                    }
+                }
+                showScreen('winners');
+                triggerContinuousConfetti();
+            } else {
+                showScreen('welcome');
+            }
         });
 
-        // 2. Quiz Data (5 questions)
-        const questions = [
-            { 
-                q: "Perang Badar, yang merupakan perang besar pertama dalam sejarah Islam, terjadi pada tanggal berapa di bulan Ramadhan?", 
-                o: ["17 Ramadhan", "10 Ramadhan", "1 Ramadhan", "27 Ramadhan"], 
-                a: 0 
-            },
-            { 
-                q: "Peristiwa turunnya ayat Al-Quran untuk pertama kalinya kepada Nabi Muhammad SAW disebut dengan?", 
-                o: ["Lailatul Qadar", "Nuzulul Quran", "Isra Miraj", "Maulid Nabi"], 
-                a: 1 
-            },
-            { 
-                q: "Apa nama pintu surga yang khusus disediakan oleh Allah SWT dan hanya bisa dimasuki oleh orang-orang yang berpuasa?", 
-                o: ["Ar-Rayyan", "Al-Firdaus", "Jannatul Adn", "Al-Kautsar"], 
-                a: 0 
-            },
-            { 
-                q: "Salat sunnah yang sangat dianjurkan dan pelaksanaannya hanya ada di malam bulan Ramadhan adalah?", 
-                o: ["Salat Tahajud", "Salat Dhuha", "Salat Tarawih", "Salat Witir"], 
-                a: 2 
-            },
-            { 
-                q: "Zakat yang diwajibkan bagi setiap jiwa muslim menjelang usainya bulan Ramadhan atau sebelum salat Idul Fitri adalah?", 
-                o: ["Zakat Mal", "Zakat Fitrah", "Zakat Profesi", "Zakat Perniagaan"], 
-                a: 1 
-            }
-        ];
+        // 2. Encrypted Quiz Data (20 questions, only 5 selected randomly)
+        // Data is base64 encoded JSON string to prevent easy inspection
+        const encryptedQuestions = "JTVCJTdCJTIycSUyMiUzQSUyMlBlcmFuZyUyMEJhZGFyJTJDJTIweWFuZyUyMG1lcnVwYWthbiUyMHBlcmFuZyUyMGJlc2FyJTIwcGVydGFtYSUyMGRhbGFtJTIwc2VqYXJhaCUyMElzbGFtJTJDJTIwdGVyamFkaSUyMHBhZGElMjB0YW5nZ2FsJTIwYmVyYXBhJTIwZGklMjBidWxhbiUyMFJhbWFkaGFuJTNGJTIyJTJDJTIybyUyMiUzQSU1QiUyMjE3JTIwUmFtYWRoYW4lMjIlMkMlMjIxMCUyMFJhbWFkaGFuJTIyJTJDJTIyMSUyMFJhbWFkaGFuJTIyJTJDJTIyMjclMjBSYW1hZGhhbiUyMiU1RCUyQyUyMmElMjIlM0EwJTdEJTJDJTdCJTIycSUyMiUzQSUyMjBlcmlzdGl3YSUyMHR1cnVubnlhJTIwYXlhdCUyMEFsLVF1cmFuJTIwdW50dWslMjBwZXJ0YW1hJTIwa2FsaW55YSUyMGtlcGFkYSUyME5hYmklMjBNdWhhbW1hZCUyMFNBVyUyMGRpc2VidXQlMjBkZW5nYW4lM0YlMjIlMkMlMjJvJTIyJTNBJTVCJTIyTGFpbGF0dWwlMjBRYWRhciUyMiUyQyUyMk51enVsdWwlMjBRdXJhbiUyMiUyQyUyMklzcmElMjBNaXJhaiUyMiUyQyUyMk1hdWxpZCUyME5hYmklMjIlNUQlMkMlMjJhJTIyJTNBMSU3RCUyQyU3QiUyMnElMjIlM0ElMjJBcGElMjBuYW1hJTIwcGludHUlMjBzdXJnYSUyMHlhbmclMjBraHVzdXMlMjBkaXNlZGlha2FuJTIwb2xlaCUyMEFsbGFoJTIwU1dUJTIwZGFuJTIwaGFueWElMjBiaXNhJTIwZGltYXN1a2klMjBvbGVoJTIwb3Jhbmctb3JhbmclMjB5YW5nJTIwYmVycHVhc2ElM0YlMjIlMkMlMjJvJTIyJTNBJTVCJTIyQXItUmF5eWFuJTIyJTJDJTIyQWwtRmlyZGF1cyUyMiUyQyUyMkphbm5hdHVsJTIwQWRuJTIyJTJDJTIyQWwtS2F1dHNhciUyMiU1RCUyQyUyMmElMjIlM0EwJTdEJTJDJTdCJTIycSUyMiUzQSUyMlNhbGF0JTIwc3VubmFoJTIweWFuZyUyMHNhbmdhdCUyMGRpYW5qdXJrYW4lMjBkYW4lMjBwZWxha3NhbmFhbm55YSUyMGhhbnlhJTIwYWRhJTIwZGklMjBtYWxhbSUyMGJ1bGFuJTIwUmFtYWRoYW4lMjBhZGFsYWglM0YlMjIlMkMlMjJvJTIyJTNBJTVCJTIyU2FsYXQlMjBUYWhhanVkJTIyJTJDJTIyU2FsYXQlMjBEaHVoYSUyMiUyQyUyMlNhbGF0JTIwVGFyYXdpaCUyMiUyQyUyMlNhbGF0JTIwV2l0aXIlMjIlNUQlMkMlMjJhJTIyJTNBMiU3RCUyQyU3QiUyMnElMjIlM0ElMjJaYWthdCUyMHlhbmclMjBkaXdhamlia2FuJTIwYmFnaSUyMHNldGlhcCUyMGppd2ElMjBtdXNsaW0lMjBtZW5qZWxhbmclMjB1c2FpbnlhJTIwYnVsYW4lMjBSYW1hZGhhbiUyMGF0YXUlMjBzZWJlbHVtJTIwc2FsYXQlMjBJZHVsJTIwRml0cmklMjBhZGFsYWglM0YlMjIlMkMlMjJvJTIyJTNBJTVCJTIyWmFrYXQlMjBNYWwlMjIlMkMlMjJaYWthdCUyMEZpdHJhaCUyMiUyQyUyMlpha2F0JTIwUHJvZmVzaSUyMiUyQyUyMlpha2F0JTIwUGVybmlhZ2FhbiUyMiU1RCUyQyUyMmElMjIlM0ExJTdEJTJDJTdCJTIycSUyMiUzQSUyMlB1YXNhJTIwUmFtYWRoYW4lMjBtdWxhaSUyMGRpd2FqaWJrYW4lMjBwYWRhJTIwdGFodW4lMjBrZSUyMGJlcmFwYSUyMEhpanJpeWFoJTNGJTIyJTJDJTIybyUyMiUzQSU1QiUyMjElMjBIaWpyaXlhaCUyMiUyQyUyMjIlMjBIaWpyaXlhaCUyMiUyQyUyMjMlMjBIaWpyaXlhaCUyMiUyQyUyMjQlMjBIaWpyaXlhaCUyMiU1RCUyQyUyMmElMjIlM0ExJTdEJTJDJTdCJTIycSUyMiUzQSUyMk1hbGFtJTIweWFuZyUyMGxlYmloJTIwYmFpayUyMGRhcmklMjBzZXJpYnUlMjBidWxhbiUyMGRpJTIwZGFsYW0lMjBidWxhbiUyMFJhbWFkaGFuJTIwZGlzZWJ1dCUzRiUyMiUyQyUyMm8lMjIlM0ElNUIlMjJMYWlsYXR1bCUyMFFhZGFyJTIyJTJDJTIyTWFsYW0lMjBOaXNmdSUyMFN5YWJhbiUyMiUyQyUyMkxhaWxhdHVsJTIwSWp0aW1hJTIyJTJDJTIyTGFpbGF0dWwlMjBNaXJhaiUyMiU1RCUyQyUyMmElMjIlM0EwJTdEJTJDJTdCJTIycSUyMiUzQSUyMktpdGFiJTIwc3VjaSUyMEFsLVF1cmFuJTIwZGl0dXJ1bmthbiUyMHNlY2FyYSUyMGJlcmFuZ3N1ci1hbmdzdXIlMjBzZWxhbWElMjBrdXJhbmclMjBsZWJpaCUzRiUyMiUyQyUyMm8lMjIlM0ElNUIlMjIxMCUyMHRhaHVuJTIyJTJDJTIyMTUlMjB0YWh1biUyMiUyQyUyMjIzJTIwdGFodW4lMjIlMkMlMjI0MCUyMHRhaHVuJTIyJTVEJTJDJTIyYSUyMiUzQTIlN0QlMkMlN0IlMjJxJTIyJTNBJTIyTWFrYW4lMjBzYWh1ciUyMG1lbWlsaWtpJTIwbmlsYWklMjBzdW5uYWguJTIwS2FwYW4lMjB3YWt0dSUyMHlhbmclMjBwYWxpbmclMjB1dGFtYSUyMHVudHVrJTIwbWVsYWtzYW5ha2FuJTIwbWFrYW4lMjBzYWh1ciUzRiUyMiUyQyUyMm8lMjIlM0ElNUIlMjJUZW5nYWglMjBtYWxhbSUyMiUyQyUyMlNlYmVsdW0lMjB0aWR1ciUyMiUyQyUyMkRpJTIwYWtoaXIlMjB3YWt0dSUyMG1lbmplbGFuZyUyMHN1YnVoJTIyJTJDJTIyU2V0ZWxhaCUyMHNoYWxhdCUyMElzeWElMjIlNUQlMkMlMjJhJTIyJTNBMiU3RCUyQyU3QiUyMnElMjIlM0ElMjJQZXJpc3Rpd2ElMjBGYXRodSUyME1ha2thaCUyMChQZW1iZWJhc2FuJTIwa290YSUyME1la2FoKSUyMHRlcmphZGklMjBwYWRhJTIwYnVsYW4lMjBSYW1hZGhhbiUyMHRhaHVuJTIwYmVyYXBhJTIwSGlqcml5YWglM0YlMjIlMkMlMjJvJTIyJTNBJTVCJTIyNiUyMEhpanJpeWFoJTIyJTJDJTIyOCUyMEhpanJpeWFoJTIyJTJDJTIyMTAlMjBIaWpyaXlhaCUyMiUyQyUyMjEyJTIwSGlqcml5YWglMjIlNUQlMkMlMjJhJTIyJTNBMSU3RCUyQyU3QiUyMnElMjIlM0ElMjJTYWxhaCUyMHNhdHUlMjBydWt1biUyMHB1YXNhJTIwYWRhbGFoJTIwYmVybmlhdC4lMjBLYXBhbiUyMHBhbGluZyUyMGxhbWJhdCUyMG5pYXQlMjBwdWFzYSUyMFJhbWFkaGFuJTIwaGFydXMlMjBkaWxha3VrYW4lM0YlMjIlMkMlMjJvJTIyJTNBJTVCJTIyU2ViZWx1bSUyMHRlcmJpdCUyMGZhamFyJTIwKHdha3R1JTIwc3VidWgpJTIyJTJDJTIyU2ViZWx1bSUyMGR6dWh1ciUyMiUyQyUyMkthcGFuJTIwc2FqYSUyMHNlYmVsdW0lMjBiZXJidWthJTIyJTJDJTIyU2FhdCUyMHNhaHVyJTIwc2FqYSUyMiU1RCUyQyUyMmElMjIlM0EwJTdEJTJDJTdCJTIycSUyMiUzQSUyMldhaHl1JTIwcGVydGFtYSUyMHlhbmclMjBkaXRlcmltYSUyME5hYmklMjBNdWhhbW1hZCUyMFNBVyUyMGRpJTIwR3VhJTIwSGlyYSUyMGFkYWxhaCUyMHN1cmFoJTNGJTIyJTJDJTIybyUyMiUzQSU1QiUyMkFsLUZhdGloYWglMjAxLTclMjIlMkMlMjJBbC1CYXFhcmFoJTIwMS01JTIyJTJDJTIyQWwtQWxhcSUyMDEtNSUyMiUyQyUyMkFsLU11ZGRhc3NpciUyMDEtNSUyMiU1RCUyQyUyMmElMjIlM0EyJTdEJTJDJTdCJTIycSUyMiUzQSUyMkJlcmFwYSUyMGthbGklMjBBbC1RdXJhbiUyMG1lbnllYnV0a2FuJTIwa2F0YSUyMCU1QyUyMlJhbWFkaGFuJTVDJTIyJTNGJTIyJTJDJTIybyUyMiUzQSU1QiUyMkhhbnlhJTIwMSUyMGthbGklMjIlMkMlMjIzJTIwa2FsaSUyMiUyQyUyMjUlMjBrYWxpJTIyJTJDJTIyMTAlMjBrYWxpJTIyJTVEJTJDJTIyYSUyMiUzQTAlN0QlMkMlN0IlMjJxJTIyJTNBJTIyUHVhc2ElMjBzdW5uYWglMjBlbmFtJTIwaGFyaSUyMGRpJTIwYnVsYW4lMjBTeWF3YWwlMjBrZXV0YW1hYW5ueWElMjBzZXRhcmElMjBkZW5nYW4lMjBiZXJwdWFzYSUyMHNlbGFtYSUzRiUyMiUyQyUyMm8lMjIlM0ElNUIlMjJTYXR1JTIwYnVsYW4lMjBwZW51aCUyMiUyQyUyMlNldGVuZ2FoJTIwdGFodW4lMjIlMkMlMjJTYXR1JTIwdGFodW4lMjBwZW51aCUyMiUyQyUyMlNldW11ciUyMGhpZHVwJTIyJTVEJTJDJTIyYSUyMiUzQTIlN0QlMkMlN0IlMjJxJTIyJTNBJTIyT3JhbmclMjB5YW5nJTIwc2FraXQlMjBwYXJhaCUyMGRhbiUyMHRpZGFrJTIwYWRhJTIwaGFyYXBhbiUyMHNlbWJ1aCUyMGRpcGVyYm9sZWhrYW4lMjB0aWRhayUyMGJlcnB1YXNhJTJDJTIwbmFtdW4lMjBkaXdhamlia2FuJTIwbWVtYmF5YXIlM0YlMjIlMkMlMjJvJTIyJTNBJTVCJTIyS2FmYXJhdCUyMiUyQyUyMkZpZHlhaCUyMiUyQyUyMlpha2F0JTIyJTJDJTIySW5mYXElMjIlNUQlMkMlMjJhJTIyJTNBMSU3RCUyQyU3QiUyMnElMjIlM0ElMjJJc3RyaSUyME5hYmklMjBNdWhhbW1hZCUyMFNBVyUyMHlhbmclMjB0ZXJrZW5hbCUyMGJhbnlhayUyMG1lcml3YXlhdGthbiUyMGhhZGl0cyUyMGRhbiUyMHB1dHJpJTIwZGFyaSUyMEFidSUyMEJha2FyJTIwQXMtU2lkZGlxJTIwYWRhbGFoJTNGJTIyJTJDJTIybyUyMiUzQSU1QiUyMktoYWRpamFoJTIyJTJDJTIyRmF0aW1haCUyMiUyQyUyMkFpc3lhaCUyMiUyQyUyMlphaW5hYiUyMiU1RCUyQyUyMmElMjIlM0EyJTdEJTJDJTdCJTIycSUyMiUzQSUyMkJlcmFwYSUyMHJha2FhdCUyMGp1bWxhaCUyMG1ha3NpbWFsJTIwc2FsYXQlMjBXaXRpciUzRiUyMiUyQyUyMm8lMjIlM0ElNUIlMjIzJTIwcmFrYWF0JTIyJTJDJTIyNyUyMHJha2FhdCUyMiUyQyUyMjExJTIwcmFrYWF0JTIyJTJDJTIyMTMlMjByYWthYXQlMjIlNUQlMkMlMjJhJTIyJTNBMiU3RCUyQyU3QiUyMnElMjIlM0ElMjJQZXJpbnRhaCUyMHdhamliJTIwcHVhc2ElMjBSYW1hZGhhbiUyMHRlcmRhcGF0JTIwZGFsYW0lMjBBbC1RdXJhbiUyMHN1cmFoJTIwYXBhJTIwZGFuJTIwYXlhdCUyMGJlcmFwYSUzRiUyMiUyQyUyMm8lMjIlM0ElNUIlMjJBbC1CYXFhcmFoJTIwYXlhdCUyMDE4MyUyMiUyQyUyMkFsLUltcmFuJTIwYXlhdCUyMDEwMyUyMiUyQyUyMkFsLU1haWRhaCUyMGF5YXQlMjAzJTIyJTJDJTIyQWwtQW5mYWwlMjBheWF0JTIwMiUyMiU1RCUyQyUyMmElMjIlM0EwJTdEJTJDJTdCJTIycSUyMiUzQSUyMlNpYXBha2FoJTIwc2FoYWJhdCUyME5hYmklMjB5YW5nJTIwbWVuamFkaSUyMGtoYWxpZmFoJTIwcGVydGFtYSUyMHNldGVsYWglMjB3YWZhdG55YSUyMFJhc3VsdWxsYWglMjBTQVclM0YlMjIlMkMlMjJvJTIyJTNBJTVCJTIyVW1hciUyMGJpbiUyMEtoYXR0YWIlMjIlMkMlMjJBbGklMjBiaW4lMjBBYmklMjBUaGFsaWIlMjIlMkMlMjJVdHNtYW4lMjBiaW4lMjBBZmZhbiUyMiUyQyUyMkFidSUyMEJha2FyJTIwQXMtU2lkZGlxJTIyJTVEJTJDJTIyYSUyMiUzQTMlN0QlMkMlN0IlMjJxJTIyJTNBJTIyQXBhJTIwbmFtYSUyMGxlbWJhaCUyMGF0YXUlMjBidWtpdCUyMHRlbXBhdCUyME5hYmklMjBNdWhhbW1hZCUyMFNBVyUyMG1lbmVyaW1hJTIwd2FoeXUlMjBwZXJ0YW1hJTIwa2FsaW55YSUzRiUyMiUyQyUyMm8lMjIlM0ElNUIlMjJKYWJhbCUyMFJhaG1haCUyMiUyQyUyMkphYmFsJTIwVWh1ZCUyMiUyQyUyMkphYmFsJTIwTnVyJTIwKEd1YSUyMEhpcmEpJTIyJTJDJTIyQnVraXQlMjBTYWZhJTIyJTVEJTJDJTIyYSUyMiUzQTIlN0QlNUQ=";
+        let activeQuestions = [];
+        let isQuizActive = false;
 
         // 3. Application State Variables
         let score = 0;
-        let timeLeft = 120; // 2 minutes
+        let timeLeft = 180; // 3 minutes
         let currentQuestionIndex = 0;
         let timerInterval = null;
         let loseReasonText = "";
@@ -222,7 +297,9 @@
             welcome: document.getElementById('screen-welcome'),
             quiz: document.getElementById('screen-quiz'),
             lose: document.getElementById('screen-lose'),
-            win: document.getElementById('screen-win')
+            celebration: document.getElementById('screen-celebration'),
+            win: document.getElementById('screen-win'),
+            winners: document.getElementById('screen-winners')
         };
         const timerDisplay = document.getElementById('timer-display');
         const soalCounter = document.getElementById('soal-counter');
@@ -230,7 +307,31 @@
         const optionsContainer = document.getElementById('options-container');
         const loseReason = document.getElementById('lose-reason');
 
+        // Anti-cheat Visibility Check
+        document.addEventListener("visibilitychange", function() {
+            if (document.hidden && isQuizActive) {
+                handleLose("curang");
+            }
+        });
+
         // Functions
+        function getShuffledQuestions() {
+            try {
+                // Decode from base64, then URL component decode, then parse JSON
+                const allQuestions = JSON.parse(decodeURIComponent(atob(encryptedQuestions)));
+                // Shuffle array (Fisher-Yates)
+                for (let i = allQuestions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+                }
+                // Return exactly 5 questions
+                return allQuestions.slice(0, 5);
+            } catch (e) {
+                console.error("Failed to load questions");
+                return [];
+            }
+        }
+
         function showScreen(screenName) {
             Object.values(screens).forEach(s => {
                 s.classList.remove('active');
@@ -274,16 +375,22 @@
         }
 
         function startQuiz() {
+            activeQuestions = getShuffledQuestions();
+            if (activeQuestions.length === 0) {
+                alert("Terjadi kesalahan memuat soal.");
+                return;
+            }
             score = 0;
-            timeLeft = 120;
+            timeLeft = 180;
             currentQuestionIndex = 0;
+            isQuizActive = true;
             showScreen('quiz');
             loadQuestion();
             startTimer();
         }
 
         function loadQuestion() {
-            const q = questions[currentQuestionIndex];
+            const q = activeQuestions[currentQuestionIndex];
             soalCounter.textContent = currentQuestionIndex + 1;
             questionText.textContent = q.q;
             
@@ -308,11 +415,11 @@
         }
 
         function handleAnswer(selectedIndex) {
-            const q = questions[currentQuestionIndex];
+            const q = activeQuestions[currentQuestionIndex];
             if (selectedIndex === q.a) {
                 // Correct Answer
                 currentQuestionIndex++;
-                if (currentQuestionIndex >= questions.length) {
+                if (currentQuestionIndex >= activeQuestions.length) {
                     handleWin();
                 } else {
                     loadQuestion();
@@ -324,19 +431,62 @@
         }
 
         function handleLose(reason) {
+            isQuizActive = false;
             clearInterval(timerInterval);
             loseReasonText = reason;
             if (reason === "salah") {
                 loseReason.textContent = "Jawaban Anda salah. Tetap semangat!";
             } else if (reason === "waktu habis") {
                 loseReason.textContent = "Waktu Anda habis. Coba lagi di lain waktu!";
+            } else if (reason === "curang") {
+                loseReason.textContent = "Anda terdeteksi keluar dari aplikasi. Kuis dibatalkan!";
             }
             showScreen('lose');
         }
 
         function handleWin() {
+            isQuizActive = false;
             clearInterval(timerInterval);
+            showScreen('celebration');
+            triggerConfetti();
+        }
+
+        function showClaimForm() {
             showScreen('win');
+        }
+
+        function triggerConfetti() {
+            var duration = 5 * 1000;
+            var animationEnd = Date.now() + duration;
+            var defaults = { startVelocity: 35, spread: 360, ticks: 100, zIndex: 50, colors: ['#fbbf24', '#047857', '#ffffff'] };
+
+            var interval = setInterval(function() {
+                var timeLeft = animationEnd - Date.now();
+
+                if (timeLeft <= 0) {
+                    return clearInterval(interval);
+                }
+
+                var particleCount = 80 * (timeLeft / duration);
+                
+                // Shoot from multiple origins for a fuller effect
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.3), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.7, 0.9), y: Math.random() - 0.2 } }));
+                confetti(Object.assign({}, defaults, { particleCount: particleCount/2, origin: { x: 0.5, y: 0.8 } }));
+            }, 200);
+        }
+
+        function triggerContinuousConfetti() {
+            var defaults = { startVelocity: 25, spread: 360, ticks: 100, zIndex: 0, colors: ['#fbbf24', '#047857', '#ffffff'] };
+            
+            setInterval(function() {
+                var particleCount = 20;
+                confetti(Object.assign({}, defaults, { particleCount, origin: { x: randomInRange(0.1, 0.9), y: Math.random() - 0.2 } }));
+            }, 500);
+        }
+
+        function randomInRange(min, max) {
+            return Math.random() * (max - min) + min;
         }
 
         function closeApp(type) {
