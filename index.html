@@ -335,9 +335,11 @@
                 const isAdmin = urlParams.get('tgWebAppStartParam') === 'admin' || false; // Simple check, full validation on bot
 
                 if (value === 'in_progress') {
-                    // Detect re-entry after abandonment
+                    // Detect re-entry after abandonment - Report immediately to bot and close
                     storage.set('quiz_status', 'completed', () => {
-                        handleLose('curang_tutup');
+                        const payload = JSON.stringify({ status: "lose", reason: "curang_tutup" });
+                        tg.sendData(payload);
+                        tg.close();
                     });
                     return;
                 }
