@@ -298,11 +298,14 @@
 
         // Helper to safely use CloudStorage or localStorage
         const storage = {
-            set: (key, val) => {
+            set: (key, val, callback) => {
                 if (tg.isVersionAtLeast && tg.isVersionAtLeast('6.9')) {
-                    tg.CloudStorage.setItem(key, val);
+                    tg.CloudStorage.setItem(key, val, (err, success) => {
+                        if (callback) callback(err, success);
+                    });
                 } else {
                     localStorage.setItem(key, val);
+                    if (callback) callback(null, true);
                 }
             },
             get: (key, callback) => {
@@ -315,57 +318,77 @@
         };
 
         document.addEventListener('DOMContentLoaded', () => {
+            // Initialize Telegram WebApp
+            if (tg.ready) tg.ready();
             try {
-                tg.expand();
+                if (tg.expand) tg.expand();
             } catch (e) {
                 console.warn('Telegram WebApp expand failed:', e);
             }
 
             // Check if user previously closed app mid-quiz
             storage.get('quiz_status', (err, value) => {
+                console.log('Detection: quiz_status =', value);
                 const urlParams = new URLSearchParams(window.location.search);
 
+                // Skip persistent checks for Admin
+                const isAdmin = urlParams.get('tgWebAppStartParam') === 'admin' || false; // Simple check, full validation on bot
+
                 if (value === 'in_progress') {
-                    // User closed app mid-quiz previously
-                    storage.set('quiz_status', 'completed');
-                    handleLose('curang_tutup');
+                    console.log('User abandoned quiz. Elimination triggered.');
+                    // Disable confirmation first to allow closing
+                    if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
+                    
+                    // MUST clear status BEFORE handleLose because handleLose might close the app
+                    storage.set('quiz_status', 'completed', () => {
+                        handleLose('curang_tutup');
+                    });
                     return;
                 }
 
-                if (urlParams.get('quota_full') === '1') {
-                    const winnersData = urlParams.get('winners');
-                    if (winnersData) {
-                        try {
-                            const base64Decoded = atob(winnersData);
-                            const uriDecoded = decodeURIComponent(base64Decoded);
-                            const winnersList = JSON.parse(uriDecoded);
-                            const winnersContainer = document.getElementById('winners-list');
-                            winnersContainer.innerHTML = '';
-                            winnersList.forEach((w, idx) => {
-                                winnersContainer.innerHTML += `
-                                    <div class="glass-card p-2 px-3 flex justify-between items-center bg-white/10 relative overflow-hidden">
-                                        <div class="z-10 relative">
-                                            <div class="text-brand-gold font-bold text-base leading-tight tracking-wide">@${w.ig}</div>
-                                            <div class="text-xs text-white/80 font-mono tracking-widest bg-black/20 px-1.5 py-0.5 mt-1 rounded inline-block border border-white/10">${w.gopay}</div>
+                // New logic: Check if user has already played (one-time rule)
+                storage.get('has_played', (err, played) => {
+                    // Check winners list first (global override/broadcast)
+                    if (urlParams.get('quota_full') === '1') {
+                        const winnersData = urlParams.get('winners');
+                        if (winnersData) {
+                            try {
+                                const base64Decoded = atob(winnersData);
+                                const uriDecoded = decodeURIComponent(base64Decoded);
+                                const winnersList = JSON.parse(uriDecoded);
+                                const winnersContainer = document.getElementById('winners-list');
+                                winnersContainer.innerHTML = '';
+                                winnersList.forEach((w, idx) => {
+                                    winnersContainer.innerHTML += `
+                                        <div class="glass-card p-2 px-3 flex justify-between items-center bg-white/10 relative overflow-hidden">
+                                            <div class="z-10 relative">
+                                                <div class="text-brand-gold font-bold text-base leading-tight tracking-wide">@${w.ig}</div>
+                                                <div class="text-xs text-white/80 font-mono tracking-widest bg-black/20 px-1.5 py-0.5 mt-1 rounded inline-block border border-white/10">${w.gopay}</div>
+                                            </div>
+                                            <div class="w-8 h-8 rounded-full bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold font-extrabold text-lg shadow-[0_0_10px_rgba(251,191,36,0.2)] z-10">
+                                                ${idx + 1}
+                                            </div>
+                                            <div class="absolute -right-2 -bottom-2 opacity-5 pointer-events-none">
+                                                <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
+                                            </div>
                                         </div>
-                                        <div class="w-8 h-8 rounded-full bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold font-extrabold text-lg shadow-[0_0_10px_rgba(251,191,36,0.2)] z-10">
-                                            ${idx + 1}
-                                        </div>
-                                        <div class="absolute -right-2 -bottom-2 opacity-5 pointer-events-none">
-                                            <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
-                                        </div>
-                                    </div>
-                                `;
-                            });
-                        } catch (e) {
-                            console.error("Failed to parse winners list", e);
+                                    `;
+                                });
+                            } catch (e) {
+                                console.error("Failed to parse winners list", e);
+                            }
                         }
+                        showScreen('winners');
+                        triggerContinuousConfetti();
+                    } else if (played === 'true' && !isAdmin) {
+                        // User already played and finished/failed
+                        alert("Anda sudah pernah mengikuti kuis ini. Kesempatan hanya satu kali.");
+                        tg.close();
+                        return;
+                    } else {
+                        showScreen('welcome');
                     }
-                    showScreen('winners');
-                    triggerContinuousConfetti();
-                } else {
-                    showScreen('welcome');
-                }
+                });
             });
         });
 
@@ -532,6 +555,7 @@
 
             // Mark quiz as completed/cleared
             storage.set('quiz_status', 'completed');
+            storage.set('has_played', 'true');
             if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
 
             if (reason === "salah") {
@@ -552,6 +576,7 @@
 
             // Session marked as completed, but still need to submit claim
             storage.set('quiz_status', 'completed');
+            storage.set('has_played', 'true');
             if (tg.disableClosingConfirmation) tg.disableClosingConfirmation();
 
             showScreen('celebration');
@@ -612,20 +637,13 @@
             btnClaim.style.visibility = 'hidden';
             btnShare.style.visibility = 'hidden';
 
-            // Add a temporary watermark
-            const watermark = document.createElement('div');
-            watermark.className = 'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 opacity-10 pointer-events-none rotate-[-30deg] z-0';
-            watermark.innerHTML = '<div class="text-4xl font-black text-white whitespace-nowrap tracking-widest uppercase">RAMADAN QUIZ 2026</div>';
-            screens.celebration.appendChild(watermark);
-
             html2canvas(screens.celebration, {
                 backgroundColor: '#022c22',
                 scale: 2, // Higher quality
                 useCORS: true,
                 logging: false
             }).then(canvas => {
-                // Remove watermark and restore buttons
-                watermark.remove();
+                // Restore buttons
                 btnClaim.style.visibility = 'visible';
                 btnShare.style.visibility = 'visible';
 
