@@ -204,14 +204,6 @@
                 <button onclick="showClaimForm()"
                     class="w-full max-w-[280px] bg-brand-gold hover:bg-yellow-400 text-brand-dark font-extrabold py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(251,191,36,0.5)] transition-all active:scale-95 text-lg relative z-20 mb-3">Isi
                     Data</button>
-                <button onclick="shareWin()" id="btn-share-story"
-                    class="w-full max-w-[280px] bg-white/10 hover:bg-white/20 text-white font-bold py-3 px-8 rounded-xl border border-white/20 transition-all active:scale-95 text-sm flex items-center justify-center gap-2 relative z-20 backdrop-blur-sm">
-                    <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
-                        <path
-                            d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                    </svg>
-                    Berbagi ke Story
-                </button>
             </div>
         </div>
 
@@ -262,17 +254,29 @@
                             d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                 </div>
-                <h2
+                <h2 id="winners-title"
                     class="text-3xl font-extrabold text-brand-gold mb-2 tracking-tighter drop-shadow-md z-10 text-center">
                     Selamat Kepada Pemenang!</h2>
-                <p class="text-white text-center mb-6 text-sm px-4 font-semibold drop-shadow-md z-10">Kuis Berkah
+                <p id="winners-subtitle" class="text-white text-center mb-6 text-sm px-4 font-semibold drop-shadow-md z-10">Kuis Berkah
                     Ramadhan 1447 H / 2026 M telah selesai. Terima kasih kepada seluruh partisipan!</p>
 
                 <div id="winners-list" class="w-full flex-grow overflow-y-auto space-y-2 px-2 pb-16 z-10 mb-4">
                     <!-- Winners injected here -->
                 </div>
 
-                <button onclick="tg.close()"
+                <div id="share-action-container" class="w-full mt-auto relative z-10 hidden flex-col gap-3">
+                   <button onclick="shareWinnersImage()" id="btn-share-winners" class="w-full bg-brand-gold hover:bg-yellow-400 text-brand-dark font-bold py-4 px-8 rounded-xl shadow-[0_0_20px_rgba(251,191,36,0.5)] transition-all active:scale-95 text-lg flex items-center justify-center gap-2">
+                        <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+                            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+                        </svg>
+                        Bagikan ke Story
+                    </button>
+                    <button onclick="tg.close()"
+                    class="w-full bg-white/10 hover:bg-white/20 text-white font-semibold py-3 px-8 rounded-xl transition-all active:scale-95 shadow-lg border border-white/20 backdrop-blur-md">Tutup
+                    Aplikasi</button>
+                </div>
+
+                <button onclick="tg.close()" id="btn-close-winners"
                     class="w-full mt-auto bg-white/10 hover:bg-white/20 text-white font-semibold py-4 px-8 rounded-xl transition-all active:scale-95 shadow-lg border border-white/20 backdrop-blur-md relative z-10">Tutup
                     Aplikasi</button>
             </div>
@@ -345,16 +349,66 @@
                 }
 
                 // Check winners list first (global override/broadcast)
-                if (urlParams.get('quota_full') === '1') {
+                if (urlParams.get('quota_full') === '1' || urlParams.get('share_winner') === '1') {
+                    const isShare = urlParams.get('share_winner') === '1';
                     const winnersData = urlParams.get('winners');
+                    const winnersContainer = document.getElementById('winners-list');
+                    winnersContainer.innerHTML = '';
+
+                    if (isShare) {
+                        try {
+                            const currentData = urlParams.get('current');
+                            const currentWinner = JSON.parse(decodeURIComponent(atob(currentData)));
+                            
+                            // Highlight the current winner at the top
+                            document.getElementById('winners-title').textContent = "Kamu Menang!";
+                            document.getElementById('winners-subtitle').innerHTML = "Selamat <b>" + currentWinner.nama + "</b>!<br><span class='text-brand-gold text-lg mt-2 block drop-shadow-md text-amber-300'>✨ Menang Saldo GoPay Rp 50.000 ✨</span>";
+                            
+                            // Show share action buttons, hide default close button
+                            document.getElementById('share-action-container').classList.remove('hidden');
+                            document.getElementById('share-action-container').classList.add('flex');
+                            document.getElementById('btn-close-winners').style.display = 'none';
+
+                            winnersContainer.innerHTML += `
+                                <div class="glass-card p-3 px-4 flex justify-between items-center bg-brand-gold/20 border-2 border-brand-gold/50 relative overflow-hidden mb-4 shadow-[0_0_15px_rgba(251,191,36,0.3)] transform scale-[1.02]">
+                                    <div class="z-10 relative">
+                                        <div class="text-white font-extrabold text-lg leading-tight tracking-wide">@${currentWinner.ig} <span class="text-xs bg-brand-gold text-brand-dark px-1.5 py-0.5 rounded ml-1 font-bold">YOU</span></div>
+                                        <div class="text-sm text-white/90 font-mono tracking-widest bg-black/30 px-2 py-1 mt-1.5 rounded inline-block border border-white/20">${currentWinner.gopay}</div>
+                                    </div>
+                                    <div class="w-10 h-10 rounded-full bg-brand-gold shadow-[0_0_15px_rgba(251,191,36,0.6)] flex items-center justify-center text-brand-dark font-extrabold text-xl z-10 border-2 border-white/50">
+                                        🏆
+                                    </div>
+                                    <div class="absolute -right-2 -bottom-2 opacity-10 pointer-events-none">
+                                        <svg class="w-16 h-16 text-brand-gold" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
+                                    </div>
+                                </div>
+                            `;
+                        } catch (e) {
+                            console.error("Failed to parse current winner data", e);
+                        }
+                    }
+
                     if (winnersData) {
                         try {
                             const base64Decoded = atob(winnersData);
                             const uriDecoded = decodeURIComponent(base64Decoded);
                             const winnersList = JSON.parse(uriDecoded);
-                            const winnersContainer = document.getElementById('winners-list');
-                            winnersContainer.innerHTML = '';
-                            winnersList.forEach((w, idx) => {
+                            
+                            let currentWinnerIG = null;
+                            if (isShare && urlParams.get('current')) {
+                                try {
+                                    const curr = JSON.parse(decodeURIComponent(atob(urlParams.get('current'))));
+                                    currentWinnerIG = curr.ig;
+                                } catch(e){}
+                            }
+
+                            let displayIdx = 1;
+                            winnersList.forEach((w) => {
+                                if (isShare && w.ig === currentWinnerIG) {
+                                    displayIdx++; // Skip exact match visually but keep offset
+                                    return;
+                                }
+                                
                                 winnersContainer.innerHTML += `
                                     <div class="glass-card p-2 px-3 flex justify-between items-center bg-white/10 relative overflow-hidden">
                                         <div class="z-10 relative">
@@ -362,13 +416,14 @@
                                             <div class="text-xs text-white/80 font-mono tracking-widest bg-black/20 px-1.5 py-0.5 mt-1 rounded inline-block border border-white/10">${w.gopay}</div>
                                         </div>
                                         <div class="w-8 h-8 rounded-full bg-brand-gold/10 border border-brand-gold/30 flex items-center justify-center text-brand-gold font-extrabold text-lg shadow-[0_0_10px_rgba(251,191,36,0.2)] z-10">
-                                            ${idx + 1}
+                                            ${displayIdx}
                                         </div>
                                         <div class="absolute -right-2 -bottom-2 opacity-5 pointer-events-none">
                                             <svg class="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"></path></svg>
                                         </div>
                                     </div>
                                 `;
+                                displayIdx++;
                             });
                         } catch (e) {
                             console.error("Failed to parse winners list", e);
@@ -619,23 +674,24 @@
             }
         }
 
-        function shareWin() {
-            const btnClaim = document.querySelector('button[onclick="showClaimForm()"]');
-            const btnShare = document.getElementById('btn-share-story');
+        function shareWinnersImage() {
+            const actionContainer = document.getElementById('share-action-container');
+            const winnersScreen = document.getElementById('screen-winners');
+
+            // Scroll to top to ensure clean capture if scrolled
+            document.getElementById('winners-list').scrollTop = 0;
 
             // Temporary hide buttons for clean capture
-            btnClaim.style.visibility = 'hidden';
-            btnShare.style.visibility = 'hidden';
+            actionContainer.style.visibility = 'hidden';
 
-            html2canvas(screens.celebration, {
+            html2canvas(winnersScreen, {
                 backgroundColor: '#022c22',
                 scale: 2, // Higher quality
                 useCORS: true,
                 logging: false
             }).then(canvas => {
                 // Restore buttons
-                btnClaim.style.visibility = 'visible';
-                btnShare.style.visibility = 'visible';
+                actionContainer.style.visibility = 'visible';
 
                 canvas.toBlob(async (blob) => {
                     const file = new File([blob], 'victory-ramadhan-quiz.png', { type: 'image/png' });
@@ -660,9 +716,7 @@
                 }, 'image/png');
             }).catch(err => {
                 console.error('Screenshot failed:', err);
-                btnClaim.style.visibility = 'visible';
-                btnShare.style.visibility = 'visible';
-                watermark.remove();
+                actionContainer.style.visibility = 'visible';
             });
         }
 
